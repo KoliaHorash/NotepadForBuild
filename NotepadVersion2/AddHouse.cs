@@ -14,7 +14,7 @@ namespace NotepadVersion2
 {
     public partial class AddHouse : Form
     {
-        public AddHouse(string dataGridView)
+        public AddHouse()
         {
             
             InitializeComponent();
@@ -22,8 +22,9 @@ namespace NotepadVersion2
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            string conectionString = Form1.connectionString;
-            SqlConnection sqlConnection = new SqlConnection(conectionString); 
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\NotepadVersion2\NotepadVersion2\DBHome.mdf;Integrated Security=True";
+
+            SqlConnection sqlConnection = new SqlConnection(connectionString); 
             if ((!string.IsNullOrEmpty(textBox1.Text)) && (!string.IsNullOrWhiteSpace(textBox1.Text)) &&
                 (!string.IsNullOrEmpty(textBox2.Text)) && (!string.IsNullOrWhiteSpace(textBox2.Text)) &&
                 (!string.IsNullOrEmpty(textBox3.Text)) && (!string.IsNullOrWhiteSpace(textBox3.Text)) &&
@@ -38,9 +39,9 @@ namespace NotepadVersion2
                     command.Parameters.AddWithValue("Price", textBox3.Text);
                     command.Parameters.AddWithValue("Link", textBox4.Text);
                     command.Parameters.AddWithValue("Date", textBox5.Text);
-                    command.Parameters.AddWithValue("Priority", comboBox2.Text);
-                    command.Parameters.AddWithValue("Realtor", textBox6.Text);
-                    command.Parameters.AddWithValue("Phone", textBox13.Text);
+                    command.Parameters.AddWithValue("Priority", textBox6.Text);
+                    command.Parameters.AddWithValue("Realtor", textBox7.Text);
+                    command.Parameters.AddWithValue("Phone", textBox8.Text);
                     await command.ExecuteNonQueryAsync();
 
                 }
@@ -48,16 +49,7 @@ namespace NotepadVersion2
                 {
                     MessageBox.Show(ex.Message.ToString(), ex.Source.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                textBox1.Clear();
-                textBox2.Clear();
-                textBox3.Clear();
-                textBox4.Clear();
-                textBox5.Clear();
-                comboBox2.Text = "";
-                textBox6.Clear();
-                textBox13.Clear();
-
+               
                 MessageBox.Show("Запис доданий в базу даних");
             }
             else
@@ -67,6 +59,17 @@ namespace NotepadVersion2
         private void AddHouse_Load(object sender, EventArgs e)
         {
 
+        }
+        public void ClearForm()
+        {
+            textBox1.Clear();
+            textBox2.Clear();
+            textBox3.Clear();
+            textBox4.Clear();
+            textBox5.Clear();
+            textBox6.Clear();
+            textBox7.Clear();
+            textBox8.Clear();
         }
     }
 }
