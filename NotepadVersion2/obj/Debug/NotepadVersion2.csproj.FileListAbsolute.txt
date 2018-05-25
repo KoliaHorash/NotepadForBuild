@@ -24,3 +24,5 @@ D:\NotepadVersion2\NotepadVersion2\obj\Debug\NotepadVersion2.csproj.GenerateReso
 D:\NotepadVersion2\NotepadVersion2\obj\Debug\NotepadVersion2.csproj.CoreCompileInputs.cache
 D:\NotepadVersion2\NotepadVersion2\obj\Debug\NotepadVersion2.exe
 D:\NotepadVersion2\NotepadVersion2\obj\Debug\NotepadVersion2.pdb
+D:\NotepadVersion2\NotepadVersion2\bin\Debug\MicroLite.dll
+D:\NotepadVersion2\NotepadVersion2\bin\Debug\MicroLite.xml

@@ -14,68 +14,35 @@ namespace NotepadVersion2
 {
     public partial class Form1 : Form
     {
-        
-        public static string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\NotepadVersion2\NotepadVersion2\DBHome.mdf;Integrated Security=True";
+
+
+        public static string directory = Directory.GetCurrentDirectory();
+
+        static string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + directory + @"\DBHome.mdf;Integrated Security=True";
+
         SqlConnection sqlConnection = new SqlConnection(connectionString);
         public Form1()
         {
             InitializeComponent();
         }
        
-        private async void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            //string directory = Directory.GetCurrentDirectory();
-
-            await sqlConnection.OpenAsync();
-
-            SqlDataReader sqlReader = null;
-            SqlCommand command = new SqlCommand("SELECT *FROM [House]", sqlConnection);
-
-            try
-            {
-                sqlReader = await command.ExecuteReaderAsync();
-                List<string[]> list = new List<string[]>();
-                while (sqlReader.Read())
-                {
-                    list.Add(new string[9]);
-
-                    list[list.Count - 1][0] = sqlReader[0].ToString();
-                    list[list.Count - 1][1] = sqlReader[1].ToString();
-                    list[list.Count - 1][2] = sqlReader[2].ToString();
-                    list[list.Count - 1][3] = sqlReader[3].ToString();
-                    list[list.Count - 1][4] = sqlReader[4].ToString();
-                    list[list.Count - 1][5] = sqlReader[5].ToString();
-                    list[list.Count - 1][6] = sqlReader[6].ToString();
-                    list[list.Count - 1][7] = sqlReader[7].ToString();
-                    list[list.Count - 1][8] = sqlReader[8].ToString();
-                }
-                sqlReader.Close();
-                foreach (string[] s in list)
-                {
-                    dataGridView1.Rows.Add(s);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString(), ex.Source.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (sqlReader != null)
-                    sqlReader.Close();
-            }
+            UpdateList();
         }
 
-        public async void UpdateList()
+        public void UpdateList()
         {
             dataGridView1.Rows.Clear();
 
+            sqlConnection.Open();
+
             SqlDataReader sqlReader = null;
             SqlCommand command = new SqlCommand("SELECT *FROM [House]", sqlConnection);
 
             try
             {
-                sqlReader = await command.ExecuteReaderAsync();
+                sqlReader = command.ExecuteReader();
 
                 List<string[]> list = new List<string[]>();
                 while (sqlReader.Read())
@@ -107,33 +74,31 @@ namespace NotepadVersion2
             {
                 if (sqlReader != null)
                     sqlReader.Close();
+                sqlConnection.Close();
             }
         }
 
         private void DataGridView1_CellMouseDoubleClick(Object sender, DataGridViewCellMouseEventArgs e)
         {
             AddHouse house = new AddHouse();
-            house.textBox1.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
-            house.textBox2.Text = this.dataGridView1.CurrentRow.Cells[2].Value.ToString();
-            house.textBox3.Text = this.dataGridView1.CurrentRow.Cells[3].Value.ToString();
-            house.textBox4.Text = this.dataGridView1.CurrentRow.Cells[4].Value.ToString();
-            house.textBox5.Text = this.dataGridView1.CurrentRow.Cells[5].Value.ToString();
-            house.textBox6.Text = this.dataGridView1.CurrentRow.Cells[6].Value.ToString();
-            house.textBox7.Text = this.dataGridView1.CurrentRow.Cells[7].Value.ToString();
-            house.textBox8.Text = this.dataGridView1.CurrentRow.Cells[8].Value.ToString();
-            house.ShowDialog();
+            try
+            {
+                house.textBox1.Text = this.dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                house.textBox2.Text = this.dataGridView1.CurrentRow.Cells[1].Value.ToString();
+                house.textBox3.Text = this.dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                house.textBox4.Text = this.dataGridView1.CurrentRow.Cells[3].Value.ToString();
+                house.textBox5.Text = this.dataGridView1.CurrentRow.Cells[4].Value.ToString();
+                house.textBox6.Text = this.dataGridView1.CurrentRow.Cells[5].Value.ToString();
+                house.textBox7.Text = this.dataGridView1.CurrentRow.Cells[6].Value.ToString();
+                house.textBox8.Text = this.dataGridView1.CurrentRow.Cells[7].Value.ToString();
+                house.textBox9.Text = this.dataGridView1.CurrentRow.Cells[8].Value.ToString();
+                house.ShowDialog();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), ex.Source.ToString(), MessageBoxButtons.OK);
+            }
         }
-
-
-        //private void dataDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
-        //{
-        //    int i = IndexDataGridView();
-
-        //    var form = new AddHouse();
-        //    if (form.ShowDialog() == DialogResult.OK)
-        //    {
-        //    }
-        //}
 
         public void AddForm()
         {
@@ -217,12 +182,7 @@ namespace NotepadVersion2
 
         private void AddButton_Click(object sender, EventArgs e)
         {
-            AddHouse addHouse = new AddHouse();
-            if (addHouse.ShowDialog() == DialogResult.OK)
-            {
-                addHouse.ShowDialog();
-            }
-
+            AddObject();
             UpdateList();
         }
 
@@ -230,6 +190,32 @@ namespace NotepadVersion2
         {
             int ind = dataGridView1.SelectedCells[0].RowIndex;
             dataGridView1.Rows.RemoveAt(ind);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sqlConnection != null && sqlConnection.State != ConnectionState.Closed)
+                sqlConnection.Close();
+            Close();
+        }
+
+        private void addObjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddObject();
+            UpdateList();
+        }
+        public static void AddObject()
+        {
+            AddHouse addHouse = new AddHouse();
+            if (addHouse.ShowDialog() == DialogResult.OK)
+            {
+                addHouse.ShowDialog();
+            }
+        }
+
+        private void updateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateList();
         }
     }
 }
